@@ -18,7 +18,7 @@
  * CKB_witnesses refers to the witnesses field of the current TX.
  *
  * As a hash we will use the Blake160-Hash of the secret message, which is a
- * random Uint64 number.
+ * random string message.
  * CKB_args: Hash(secret_msg) && PubKey Fingerprint A && PubKey Fingerprint B.
  * CKB_witnesses: Either secret_msg || block_header.
  */
