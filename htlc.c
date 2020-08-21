@@ -32,8 +32,8 @@
 int extract_witness_secret(uint8_t *witness, uint64_t len, mol_seg_t *secret_seg);
 int extract_script_secret(mol_seg_t *real_hash);
 int extract_header_number(int headeridx, uint64_t ckb_option, uint64_t *blocknr);
-bool unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witness_len);
-bool check_blocktime(unsigned char *witness, uint64_t witness_len);
+int unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witness_len);
+int check_blocktime(unsigned char *witness, uint64_t witness_len);
 
 int main (int argc, char* argv[]) {
   int ret;
@@ -48,17 +48,17 @@ int main (int argc, char* argv[]) {
   unsigned char witness[WITNESS_SIZE];
   ret = ckb_load_witness(witness, &witness_len, 0, 0, CKB_SOURCE_GROUP_INPUT);
   if (ret != CKB_SUCCESS) {
-    return false;
+    return ret;
   }
   if (witness_len > WITNESS_SIZE) {
-    return false;
+    return ERROR_WITNESS_SIZE;
   }
 
-  if (unlock_hashlock(real_hash, witness, witness_len)) {
+  if (unlock_hashlock(real_hash, witness, witness_len) != HTLC_SUCCESS) {
     return 0;
   }
 
-  if (check_blocktime(witness, witness_len)) {
+  if (check_blocktime(witness, witness_len) != HTLC_SUCCESS) {
     // signature verifcation is missing here. Anyone can claim funds after the
     // lock expired.
     return 0;
@@ -70,7 +70,7 @@ int main (int argc, char* argv[]) {
 // check_blocktime is given a witness with according length, extracts the
 // original `blocknumber` where the HTLC was created and compares it to the
 // `blocknumber` within the block that was referenced in the HtlcWitness struct.
-bool check_blocktime(unsigned char *witness, uint64_t witness_len) {
+int check_blocktime(unsigned char *witness, uint64_t witness_len) {
   int ret;
   // block header index for current transaction
   mol_seg_t witness_seg;
@@ -93,10 +93,10 @@ bool check_blocktime(unsigned char *witness, uint64_t witness_len) {
   }
 
   if (givenHeaderNumber < inputHeaderNumber + BLOCKTIME) {
-    return false;
+    return HTLC_PREMATURE_TIMEOUT;
   }
 
-  return true;
+  return HTLC_SUCCESS;
 }
 
 // extract_header_number extracts the blocknumber from a blockheader. Given
@@ -168,15 +168,15 @@ int extract_script_secret(mol_seg_t *real_hash) {
 // unlock_hashlock tries to unlock the hashlock. It extracts the witness secret
 // applies Blake2b and compares the original BLAKE160-hash (from `Script.args`)
 // to the calculated BLAKE160-hash (from `blake2b(HtlcWitness.secret)`.
-bool unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witness_len) {
+int unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witness_len) {
   int ret;
   mol_seg_t witness_sec_seg;
   ret = extract_witness_secret(witness, witness_len, &witness_sec_seg);
   if (ret != CKB_SUCCESS) {
-    return false;
+    return ret;
   }
   if (witness_len == 0) {
-    return false;
+    return ERROR_WITNESS_SIZE;
   }
 
   unsigned char claimed_hashed[BLAKE2B_BLOCK_SIZE];
@@ -186,9 +186,9 @@ bool unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witne
   blake2b_final(&blake2b_ctx, claimed_hashed, BLAKE2B_BLOCK_SIZE);
 
   if (memcmp(real_hash.ptr, claimed_hashed, SCRIPT_ARG_LEN) != 0) {
-    return false;
+    return ERROR_MISMATCHED_HASH;
   }
-  return true;
+  return HTLC_SUCCESS;
 }
 
 // extract_witness_secret extracts the secret from `HtlcWitness` and writes it
