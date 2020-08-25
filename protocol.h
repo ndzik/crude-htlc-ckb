@@ -88,6 +88,27 @@ _CPP_BEGIN
 #define                                 MolReader_Byte32_get_nth29(s)                   mol_slice_by_offset(s, 29, 1)
 #define                                 MolReader_Byte32_get_nth30(s)                   mol_slice_by_offset(s, 30, 1)
 #define                                 MolReader_Byte32_get_nth31(s)                   mol_slice_by_offset(s, 31, 1)
+#define                                 MolReader_Byte20_verify(s, c)                   mol_verify_fixed_size(s, 20)
+#define                                 MolReader_Byte20_get_nth0(s)                    mol_slice_by_offset(s, 0, 1)
+#define                                 MolReader_Byte20_get_nth1(s)                    mol_slice_by_offset(s, 1, 1)
+#define                                 MolReader_Byte20_get_nth2(s)                    mol_slice_by_offset(s, 2, 1)
+#define                                 MolReader_Byte20_get_nth3(s)                    mol_slice_by_offset(s, 3, 1)
+#define                                 MolReader_Byte20_get_nth4(s)                    mol_slice_by_offset(s, 4, 1)
+#define                                 MolReader_Byte20_get_nth5(s)                    mol_slice_by_offset(s, 5, 1)
+#define                                 MolReader_Byte20_get_nth6(s)                    mol_slice_by_offset(s, 6, 1)
+#define                                 MolReader_Byte20_get_nth7(s)                    mol_slice_by_offset(s, 7, 1)
+#define                                 MolReader_Byte20_get_nth8(s)                    mol_slice_by_offset(s, 8, 1)
+#define                                 MolReader_Byte20_get_nth9(s)                    mol_slice_by_offset(s, 9, 1)
+#define                                 MolReader_Byte20_get_nth10(s)                   mol_slice_by_offset(s, 10, 1)
+#define                                 MolReader_Byte20_get_nth11(s)                   mol_slice_by_offset(s, 11, 1)
+#define                                 MolReader_Byte20_get_nth12(s)                   mol_slice_by_offset(s, 12, 1)
+#define                                 MolReader_Byte20_get_nth13(s)                   mol_slice_by_offset(s, 13, 1)
+#define                                 MolReader_Byte20_get_nth14(s)                   mol_slice_by_offset(s, 14, 1)
+#define                                 MolReader_Byte20_get_nth15(s)                   mol_slice_by_offset(s, 15, 1)
+#define                                 MolReader_Byte20_get_nth16(s)                   mol_slice_by_offset(s, 16, 1)
+#define                                 MolReader_Byte20_get_nth17(s)                   mol_slice_by_offset(s, 17, 1)
+#define                                 MolReader_Byte20_get_nth18(s)                   mol_slice_by_offset(s, 18, 1)
+#define                                 MolReader_Byte20_get_nth19(s)                   mol_slice_by_offset(s, 19, 1)
 #define                                 MolReader_Uint256_verify(s, c)                  mol_verify_fixed_size(s, 32)
 #define                                 MolReader_Uint256_get_nth0(s)                   mol_slice_by_offset(s, 0, 1)
 #define                                 MolReader_Uint256_get_nth1(s)                   mol_slice_by_offset(s, 1, 1)
@@ -236,10 +257,10 @@ MOLECULE_API_DECORATOR  mol_errno       MolReader_WitnessArgs_verify            
 #define                                 MolReader_WitnessArgs_get_lock(s)               mol_table_slice_by_index(s, 0)
 #define                                 MolReader_WitnessArgs_get_input_type(s)         mol_table_slice_by_index(s, 1)
 #define                                 MolReader_WitnessArgs_get_output_type(s)        mol_table_slice_by_index(s, 2)
-#define                                 MolReader_HtlcArgs_verify(s, c)                 mol_verify_fixed_size(s, 68)
+#define                                 MolReader_HtlcArgs_verify(s, c)                 mol_verify_fixed_size(s, 84)
 #define                                 MolReader_HtlcArgs_get_sigA(s)                  mol_slice_by_offset(s, 0, 32)
 #define                                 MolReader_HtlcArgs_get_sigB(s)                  mol_slice_by_offset(s, 32, 32)
-#define                                 MolReader_HtlcArgs_get_hashedSecret(s)          mol_slice_by_offset(s, 64, 4)
+#define                                 MolReader_HtlcArgs_get_hashedSecret(s)          mol_slice_by_offset(s, 64, 20)
 MOLECULE_API_DECORATOR  mol_errno       MolReader_HtlcWitness_verify                    (const mol_seg_t*, bool);
 #define                                 MolReader_HtlcWitness_actual_field_count(s)     mol_table_actual_field_count(s)
 #define                                 MolReader_HtlcWitness_has_extra_fields(s)       mol_table_has_extra_fields(s, 2)
@@ -322,6 +343,29 @@ MOLECULE_API_DECORATOR  mol_errno       MolReader_HtlcWitness_verify            
 #define                                 MolBuilder_Byte32_set_nth31(b, p)               mol_builder_set_byte_by_offset(b, 31, p)
 #define                                 MolBuilder_Byte32_build(b)                      mol_builder_finalize_simple(b)
 #define                                 MolBuilder_Byte32_clear(b)                      mol_builder_discard(b)
+#define                                 MolBuilder_Byte20_init(b)                       mol_builder_initialize_fixed_size(b, 20)
+#define                                 MolBuilder_Byte20_set_nth0(b, p)                mol_builder_set_byte_by_offset(b, 0, p)
+#define                                 MolBuilder_Byte20_set_nth1(b, p)                mol_builder_set_byte_by_offset(b, 1, p)
+#define                                 MolBuilder_Byte20_set_nth2(b, p)                mol_builder_set_byte_by_offset(b, 2, p)
+#define                                 MolBuilder_Byte20_set_nth3(b, p)                mol_builder_set_byte_by_offset(b, 3, p)
+#define                                 MolBuilder_Byte20_set_nth4(b, p)                mol_builder_set_byte_by_offset(b, 4, p)
+#define                                 MolBuilder_Byte20_set_nth5(b, p)                mol_builder_set_byte_by_offset(b, 5, p)
+#define                                 MolBuilder_Byte20_set_nth6(b, p)                mol_builder_set_byte_by_offset(b, 6, p)
+#define                                 MolBuilder_Byte20_set_nth7(b, p)                mol_builder_set_byte_by_offset(b, 7, p)
+#define                                 MolBuilder_Byte20_set_nth8(b, p)                mol_builder_set_byte_by_offset(b, 8, p)
+#define                                 MolBuilder_Byte20_set_nth9(b, p)                mol_builder_set_byte_by_offset(b, 9, p)
+#define                                 MolBuilder_Byte20_set_nth10(b, p)               mol_builder_set_byte_by_offset(b, 10, p)
+#define                                 MolBuilder_Byte20_set_nth11(b, p)               mol_builder_set_byte_by_offset(b, 11, p)
+#define                                 MolBuilder_Byte20_set_nth12(b, p)               mol_builder_set_byte_by_offset(b, 12, p)
+#define                                 MolBuilder_Byte20_set_nth13(b, p)               mol_builder_set_byte_by_offset(b, 13, p)
+#define                                 MolBuilder_Byte20_set_nth14(b, p)               mol_builder_set_byte_by_offset(b, 14, p)
+#define                                 MolBuilder_Byte20_set_nth15(b, p)               mol_builder_set_byte_by_offset(b, 15, p)
+#define                                 MolBuilder_Byte20_set_nth16(b, p)               mol_builder_set_byte_by_offset(b, 16, p)
+#define                                 MolBuilder_Byte20_set_nth17(b, p)               mol_builder_set_byte_by_offset(b, 17, p)
+#define                                 MolBuilder_Byte20_set_nth18(b, p)               mol_builder_set_byte_by_offset(b, 18, p)
+#define                                 MolBuilder_Byte20_set_nth19(b, p)               mol_builder_set_byte_by_offset(b, 19, p)
+#define                                 MolBuilder_Byte20_build(b)                      mol_builder_finalize_simple(b)
+#define                                 MolBuilder_Byte20_clear(b)                      mol_builder_discard(b)
 #define                                 MolBuilder_Uint256_init(b)                      mol_builder_initialize_fixed_size(b, 32)
 #define                                 MolBuilder_Uint256_set_nth0(b, p)               mol_builder_set_byte_by_offset(b, 0, p)
 #define                                 MolBuilder_Uint256_set_nth1(b, p)               mol_builder_set_byte_by_offset(b, 1, p)
@@ -496,10 +540,10 @@ MOLECULE_API_DECORATOR  mol_seg_res_t   MolBuilder_CellbaseWitness_build        
 #define                                 MolBuilder_WitnessArgs_set_output_type(b, p, l) mol_table_builder_add(b, 2, p, l)
 MOLECULE_API_DECORATOR  mol_seg_res_t   MolBuilder_WitnessArgs_build                    (mol_builder_t);
 #define                                 MolBuilder_WitnessArgs_clear(b)                 mol_builder_discard(b)
-#define                                 MolBuilder_HtlcArgs_init(b)                     mol_builder_initialize_fixed_size(b, 68)
+#define                                 MolBuilder_HtlcArgs_init(b)                     mol_builder_initialize_fixed_size(b, 84)
 #define                                 MolBuilder_HtlcArgs_set_sigA(b, p)              mol_builder_set_by_offset(b, 0, p, 32)
 #define                                 MolBuilder_HtlcArgs_set_sigB(b, p)              mol_builder_set_by_offset(b, 32, p, 32)
-#define                                 MolBuilder_HtlcArgs_set_hashedSecret(b, p)      mol_builder_set_by_offset(b, 64, p, 4)
+#define                                 MolBuilder_HtlcArgs_set_hashedSecret(b, p)      mol_builder_set_by_offset(b, 64, p, 20)
 #define                                 MolBuilder_HtlcArgs_build(b)                    mol_builder_finalize_simple(b)
 #define                                 MolBuilder_HtlcArgs_clear(b)                    mol_builder_discard(b)
 #define                                 MolBuilder_HtlcWitness_init(b)                  mol_table_builder_initialize(b, 128, 2)
@@ -524,6 +568,10 @@ MOLECULE_API_DECORATOR const uint8_t MolDefault_Uint128[16]      =  {
 };
 MOLECULE_API_DECORATOR const uint8_t MolDefault_Byte32[32]       =  {
     ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
+    ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
+    ____, ____, ____, ____, ____, ____, ____, ____,
+};
+MOLECULE_API_DECORATOR const uint8_t MolDefault_Byte20[20]       =  {
     ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
     ____, ____, ____, ____, ____, ____, ____, ____,
 };
@@ -687,13 +735,14 @@ MOLECULE_API_DECORATOR const uint8_t MolDefault_WitnessArgs[16]  =  {
     0x10, ____, ____, ____, 0x10, ____, ____, ____, 0x10, ____, ____, ____,
     0x10, ____, ____, ____,
 };
-MOLECULE_API_DECORATOR const uint8_t MolDefault_HtlcArgs[68]     =  {
+MOLECULE_API_DECORATOR const uint8_t MolDefault_HtlcArgs[84]     =  {
     ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
     ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
     ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
     ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
     ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
-    ____, ____, ____, ____, ____, ____, ____, ____,
+    ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
+    ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____,
 };
 MOLECULE_API_DECORATOR const uint8_t MolDefault_HtlcWitness[20]  =  {
     0x14, ____, ____, ____, 0x0c, ____, ____, ____, 0x10, ____, ____, ____,

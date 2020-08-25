@@ -26,16 +26,16 @@
 #define HEADER_SIZE 1552
 #define SCRIPT_LEN 32768 // 32KB
 #define SCRIPT_ARG_LEN 20
-#define WITNESS_SIZE 12
+#define MAX_WITNESS_SIZE 32768
 #define BLOCKTIME 20
 
 int extract_witness_secret(uint8_t *witness, uint64_t len, mol_seg_t *secret_seg);
 int extract_script_secret(mol_seg_t *real_hash);
 int extract_header_number(int headeridx, uint64_t ckb_option, uint64_t *blocknr);
-bool unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witness_len);
+bool unlock_hashlock(mol_seg_t real_hash, uint64_t witness_len);
 bool check_blocktime(unsigned char *witness, uint64_t witness_len);
 
-int main (int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
   int ret;
   mol_seg_t real_hash;
   ret = extract_script_secret(&real_hash);
@@ -43,26 +43,27 @@ int main (int argc, char* argv[]) {
     return ret;
   }
 
-  // retrieve secret from witnesses.
-  uint64_t witness_len = WITNESS_SIZE;
-  unsigned char witness[WITNESS_SIZE];
+  uint64_t witness_len = MAX_WITNESS_SIZE;
   ret = ckb_load_witness(witness, &witness_len, 0, 0, CKB_SOURCE_GROUP_INPUT);
   if (ret != CKB_SUCCESS) {
-    return false;
+    return ret;
   }
-  if (witness_len > WITNESS_SIZE) {
-    return false;
+  if (witness_len > MAX_WITNESS_SIZE) {
+    return ERROR_WITNESS_SIZE;
   }
 
-  if (unlock_hashlock(real_hash, witness, witness_len)) {
+  // TODO: load witness in a correct way. check implementation of
+  // `extract_witness_lock()` from `common.h` in `ckb-system-scripts` for
+  // reference.
+  if (unlock_hashlock(real_hash, witness_len)) {
     return 0;
   }
 
-  if (check_blocktime(witness, witness_len)) {
-    // signature verifcation is missing here. Anyone can claim funds after the
-    // lock expired.
-    return 0;
-  }
+  //if (check_blocktime(witness, witness_len)) {
+  //  // signature verifcation is missing here. Anyone can claim funds after the
+  //  // lock expired.
+  //  return 0;
+  //}
 
   return ERROR_HTLC_FAILURE;
 }
@@ -157,7 +158,11 @@ int extract_script_secret(mol_seg_t *real_hash) {
 
   // now we are ready to retrieve the script argument, the blake160 hash of secret.
   mol_seg_t args_seg = MolReader_Script_get_args(&script_seg);
-  *real_hash = MolReader_Bytes_raw_bytes(&args_seg);
+  *real_hash = MolReader_HtlcArgs_get_hashedSecret(&args_seg);
+  if (MolReader_BytesOpt_is_none(real_hash)) {
+    return ERROR_ENCODING;
+  }
+
   if (real_hash->size != SCRIPT_ARG_LEN) {
     return ERROR_ARGUMENTS_LEN;
   }
@@ -168,7 +173,7 @@ int extract_script_secret(mol_seg_t *real_hash) {
 // unlock_hashlock tries to unlock the hashlock. It extracts the witness secret
 // applies Blake2b and compares the original BLAKE160-hash (from `Script.args`)
 // to the calculated BLAKE160-hash (from `blake2b(HtlcWitness.secret)`.
-bool unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witness_len) {
+bool unlock_hashlock(mol_seg_t real_hash, uint64_t witness_len) {
   int ret;
   mol_seg_t witness_sec_seg;
   ret = extract_witness_secret(witness, witness_len, &witness_sec_seg);
@@ -188,6 +193,7 @@ bool unlock_hashlock(mol_seg_t real_hash, unsigned char *witness, uint64_t witne
   if (memcmp(real_hash.ptr, claimed_hashed, SCRIPT_ARG_LEN) != 0) {
     return false;
   }
+
   return true;
 }
 
