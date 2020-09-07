@@ -25,7 +25,7 @@
 #define BLAKE2B_BLOCK_SIZE 32
 #define HEADER_SIZE 4096
 #define SCRIPT_LEN 32768 // 32KB
-#define SCRIPT_ARG_LEN 20
+#define HASH_LEN 20
 #define MAX_WITNESS_SIZE 32768
 #define BLOCKTIME 30
 
@@ -161,7 +161,7 @@ int extract_script_secret(mol_seg_t *real_hash) {
     return ERROR_ENCODING;
   }
 
-  if (real_hash->size != SCRIPT_ARG_LEN) {
+  if (real_hash->size != HASH_LEN) {
     return ERROR_ARGUMENTS_LEN;
   }
 
@@ -188,7 +188,7 @@ int unlock_hashlock(mol_seg_t real_hash, uint8_t *witness, uint64_t witness_len)
   blake2b_update(&blake2b_ctx, (char*)sec_bytes_seg.ptr, sec_bytes_seg.size);
   blake2b_final(&blake2b_ctx, claimed_hashed, BLAKE2B_BLOCK_SIZE);
 
-  if (memcmp(real_hash.ptr, claimed_hashed, BLAKE2B_BLOCK_SIZE) != 0) {
+  if (memcmp(real_hash.ptr, claimed_hashed, HASH_LEN) != 0) {
     return ERROR_MISMATCHED_HASH;
   }
 
@@ -216,8 +216,8 @@ int extract_witness_secret(uint8_t *witness, uint64_t len, mol_seg_t *secret_seg
 }
 
 int htlc_debug_itoa(int num) {
-  int len = snprintf(NULL, 0, "%ld", num);
+  int len = snprintf(NULL, 0, "%d", num);
   char *numString = malloc(len+1);
-  snprintf(numString, len+1, "%ld", num);
+  snprintf(numString, len+1, "%d", num);
   return ckb_debug(numString);
 }
